@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,12 +16,17 @@ import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 /**
@@ -132,6 +138,29 @@ public class QRCodeUtil {
 		graph.draw(shape);
 		graph.dispose();
 	}
+	
+	/**
+	 * @aim  解析二维码图片
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
+	 public static String decode(File file) throws Exception {  
+	        BufferedImage image;  
+	        image = ImageIO.read(file);  
+	        if (image == null) {  
+	            return null;  
+	        }  
+	        BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(  
+	                image);  
+	        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));  
+	        Result result;  
+	        Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>();  
+	        hints.put(DecodeHintType.CHARACTER_SET, CHARSET);  
+	        result = new MultiFormatReader().decode(bitmap, hints);  
+	        String resultStr = result.getText();  
+	        return resultStr;  
+	    } 
 
 	/**
 	 * 创建 image 完整二维码图片

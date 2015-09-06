@@ -16,7 +16,7 @@ import com.google.zxing.WriterException;
  */
 public class App3 {
 
-	public static void main(String[] args) throws WriterException {
+	public static void main(String[] args) throws Exception {
 
 		// String imgPath = "D:\\Users\\Zhangjunqiao\\3_Files";
 		// try {
@@ -45,7 +45,9 @@ public class App3 {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		File file = new File("D:\\Users\\Zhangjunqiao\\3_Files\\2.jpg");
+		
+		System.out.println("解析二维码的结果为："+QRCodeUtil.decode(file));
 	}
 
 }
