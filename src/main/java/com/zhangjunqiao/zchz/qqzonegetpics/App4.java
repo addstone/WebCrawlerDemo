@@ -1,5 +1,8 @@
 package com.zhangjunqiao.zchz.qqzonegetpics;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,39 +48,53 @@ public class App4 {
 	 */
 	private static void timeStamp2time(String timestamp) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Long time = new Long(timestamp) * 1000L;   // 乘以1000，恢复单位为秒形成Long包装类
-		String d = format.format(time);  //用format类格式化Long为String
-		Date date = format.parse(d);   //把已经格式化好的String转为Date类
+		Long time = new Long(timestamp) * 1000L; // 乘以1000，恢复单位为秒形成Long包装类
+		String d = format.format(time); // 用format类格式化Long为String
+		Date date = format.parse(d); // 把已经格式化好的String转为Date类
 
 		System.out.println("Format To String(Date):" + d);
 
 		System.out.println("Format To Date:" + date);
 	}
-	
-/*
- * byte[]转16进制String格式
- */
+
+	/*
+	 * byte[]转16进制String格式
+	 */
 	private static String byteToHex(final byte[] hash) {
 		Formatter formatter = new Formatter();
 		for (byte b : hash) {
-			formatter.format("%02x", b);  
-			//X 表示以十六进制形式输出, 02 表示不足两位，前面补0输出；出过两位，不影响
-			//formatter可以把格式化好的东西累加到屁股后面
+			formatter.format("%02x", b);
+			// X 表示以十六进制形式输出, 02 表示不足两位，前面补0输出；出过两位，不影响
+			// formatter可以把格式化好的东西累加到屁股后面
 		}
 		String result = formatter.toString();
 		formatter.close();
 		return result;
 	}
+/*
+ * signature sha-1 加密技术
+ */
+	private static void signatureGenerator()
+			throws UnsupportedEncodingException, NoSuchAlgorithmException {
+		String string1 = "zhangjunqiao";
+		MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+		crypt.reset();
+		crypt.update(string1.getBytes("UTF-8"));
+		String signature = byteToHex(crypt.digest());
+		System.out.println(signature);
+	}
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) throws ParseException,
+			UnsupportedEncodingException, NoSuchAlgorithmException {
 		System.out.println(create_nonce_str());
 		System.out.println(create_timestamp2());
 		timeStamp2time(create_timestamp());
-		byte a = 127;//哎，发现这个byte的上限是127
+		byte a = 127;// 哎，发现这个byte的上限是127
 		byte b = 14;
 		byte[] hash = new byte[5];
 		hash[0] = a;
 		hash[1] = b;
 		System.out.println(byteToHex(hash));
+		signatureGenerator();
 	}
 }
