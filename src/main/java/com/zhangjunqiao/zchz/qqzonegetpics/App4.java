@@ -3,12 +3,13 @@ package com.zhangjunqiao.zchz.qqzonegetpics;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.UUID;
 
 /**
  * 
  * @author zjq
- * @aim 学习了UUID的获取，2种时间戳的获取，时间戳转时间
+ * @aim 学习了UUID的获取，2种时间戳的获取，时间戳转时间，byte[]转16进制String格式
  * 
  * 
  */
@@ -52,10 +53,31 @@ public class App4 {
 
 		System.out.println("Format To Date:" + date);
 	}
+	
+/*
+ * byte[]转16进制String格式
+ */
+	private static String byteToHex(final byte[] hash) {
+		Formatter formatter = new Formatter();
+		for (byte b : hash) {
+			formatter.format("%02x", b);  
+			//X 表示以十六进制形式输出, 02 表示不足两位，前面补0输出；出过两位，不影响
+			//formatter可以把格式化好的东西累加到屁股后面
+		}
+		String result = formatter.toString();
+		formatter.close();
+		return result;
+	}
 
 	public static void main(String[] args) throws ParseException {
 		System.out.println(create_nonce_str());
 		System.out.println(create_timestamp2());
 		timeStamp2time(create_timestamp());
+		byte a = 127;//哎，发现这个byte的上限是127
+		byte b = 14;
+		byte[] hash = new byte[5];
+		hash[0] = a;
+		hash[1] = b;
+		System.out.println(byteToHex(hash));
 	}
 }
